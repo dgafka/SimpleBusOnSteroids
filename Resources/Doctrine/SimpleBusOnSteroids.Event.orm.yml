@@ -1,0 +1,10 @@
+CleanCode\SimpleBusOnSteroids\Event:
+    type: entity
+    table: simple_bus_event_store
+    embedded:
+        eventData:
+            class: EventData
+            columnPrefix: event_data_
+        metaData:
+            class: MetaData
+            columnPrefix: event_meta_data_

@@ -1,0 +1,20 @@
+CleanCode\SimpleBusOnSteroids\MetaData:
+    type: embeddable
+    fields:
+        eventId:
+            type: string
+            column: event_id
+            id: true
+        parentId:
+            type: string
+            column: parent_id
+            nullable: true
+        correlationId:
+            type: string
+            column: correlation_id
+        occurredOn:
+            type: datetime
+            column: occurred_on
+        description:
+            type: string
+            column: description

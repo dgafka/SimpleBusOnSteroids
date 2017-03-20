@@ -1,0 +1,9 @@
+CleanCode\SimpleBusOnSteroids\EventData:
+    type: embeddable
+    fields:
+        eventName:
+            type: string
+            column: event_name
+        payload:
+            type: json_array
+            column: payload

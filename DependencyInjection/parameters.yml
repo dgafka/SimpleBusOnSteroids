@@ -1,0 +1,21 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: mysql
+    database_port: null
+    database_name: simplebus
+    database_user: admin
+    database_password: root
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: ThisTokenIsNotSoSecretChangeIt
+    rabbitmq_host: rabbitmq
+    simple_bus_max_requeue_times: 3
+    simple_bus_base_time_in_seconds: 3
+    simple_bus_requeue_multiply_time_by: 3
+    simple_bus_synchronize_for_message_amount: 0
+    simple_bus_how_many_events_at_once: 2
+    simple_bus_send_messages_every_seconds: 1.2
+    simple_bus_dead_letter_exchange_name: asynchronous_events
+    simple_bus_dead_letter_queue_name: dead_letter

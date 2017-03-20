@@ -1,0 +1,12 @@
+CleanCode\SimpleBusOnSteroids\Middleware\MessageSubscriberDispatcher\SubscriberHandledEvent:
+    type: entity
+    table: simple_bus_subscriber_handled_event
+    fields:
+        subscriberName:
+            type: string
+            id: true
+            column: subscriber_name
+        eventId:
+            type: string
+            id: true
+            column: event_id
