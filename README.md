@@ -39,7 +39,8 @@ This can be used to recreate Read Model for example
 ## Installation
 
 Before:
-    If you have [LongRunningBundle](https://github.com/LongRunning/LongRunning) installed you need to remove it.
+    If you have [LongRunningBundle](https://github.com/LongRunning/LongRunning) installed you need to remove it.  
+    You can't make use of `asynchronous_event_subscriber` and `event_subscriber` anymore. It's replace with `asynchronous_steroids_event_subscriber`
 
 1. Change rabbitmq configuration. You need to have [delayed-message plugin](https://github.com/rabbitmq/rabbitmq-delayed-message-exchange) installed in your rabbitmq instance
   
@@ -91,7 +92,7 @@ Before:
           
 
          XML
-         <tag name="asynchronous_event_bus_middleware" subscribes_to="Events\PersonWasCreated" subscriber_name="person_was_created_subscriber"/>
+         <tag name="asynchronous_steroids_event_subscriber" subscribes_to="Events\PersonWasCreated" subscriber_name="person_was_created_subscriber"/>
          Annotation   
          @DI\Tag("asynchronous_steroids_event_subscriber", attributes={"subscribes_to" = "AppBundle\Entity\PersonWasCreated", "subscriber_name" = "person_was_created_sub"})
      
