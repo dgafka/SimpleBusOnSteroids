@@ -20,12 +20,12 @@
         "doctrine/orm": "~2.5",
         "doctrine/doctrine-bundle": "~1.6",
         "symfony/monolog-bundle": "~3.0|~2.8",
-        "sensio/framework-extra-bundle": "~3.0.2",
+        "sensio/framework-extra-bundle": "~3.0",
         "ramsey/uuid": "~3.5|~2.0",
-        "simple-bus/rabbitmq-bundle-bridge": "~3.1.0",
-        "simple-bus/symfony-bridge": "~4.1.5",
-        "simple-bus/doctrine-orm-bridge": "~4.0.0",
-        "simple-bus/jms-serializer-bundle-bridge": "~2.0.2"
+        "simple-bus/rabbitmq-bundle-bridge": "~3.1",
+        "simple-bus/symfony-bridge": "~4.1",
+        "simple-bus/doctrine-orm-bridge": "~4.0",
+        "simple-bus/jms-serializer-bundle-bridge": "~2.0"
     },
     "config": {
         "bin-dir": "bin/"
