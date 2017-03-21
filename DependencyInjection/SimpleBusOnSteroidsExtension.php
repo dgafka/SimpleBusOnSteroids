@@ -29,17 +29,17 @@ class SimpleBusOnSteroidsExtension extends Extension
         $configuration = new SimpleBusConfiguration();
         $config = $processor->processConfiguration($configuration, $configs);
 
-        if (!isset($config['simple_bus_on_steroids'])) {
+        if (!empty($config)) {
             throw new \RuntimeException("You must provide config for 'simple_bus_on_steroids'. At least empty one.");
         }
 
-        $container->setParameter('simple_bus.exception.requeue_max_times', $config['simple_bus_on_steroids']['exception']['requeue_max_times']);
-        $container->setParameter('simple_bus.exception.requeue_time', $config['simple_bus_on_steroids']['exception']['requeue_time']);
-        $container->setParameter('simple_bus.exception.requeue_multiply_by', $config['simple_bus_on_steroids']['exception']['requeue_multiply_by']);
-        $container->setParameter('simple_bus.exception.dead_letter_exchange_name', $config['simple_bus_on_steroids']['exception']['dead_letter_exchange_name']);
-        $container->setParameter('simple_bus.exception.dead_letter_queue_name', $config['simple_bus_on_steroids']['exception']['dead_letter_queue_name']);
-        $container->setParameter('simple_bus_how_many_events_at_once', $config['simple_bus_on_steroids']['publisher']['how_many_to_retrieve_at_once']);
-        $container->setParameter('simple_bus_send_messages_every_seconds', $config['simple_bus_on_steroids']['publisher']['send_messages_every_seconds']);
+        $container->setParameter('simple_bus.exception.requeue_max_times', $config['requeue_max_times']);
+        $container->setParameter('simple_bus.exception.requeue_time', $config['requeue_time']);
+        $container->setParameter('simple_bus.exception.requeue_multiply_by', $config['requeue_multiply_by']);
+        $container->setParameter('simple_bus.exception.dead_letter_exchange_name', $config['dead_letter_exchange_name']);
+        $container->setParameter('simple_bus.exception.dead_letter_queue_name', $config['dead_letter_queue_name']);
+        $container->setParameter('simple_bus_how_many_events_at_once', $config['how_many_to_retrieve_at_once']);
+        $container->setParameter('simple_bus_send_messages_every_seconds', $config['send_messages_every_seconds']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
