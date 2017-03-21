@@ -38,7 +38,7 @@ This can be used to recreate Read Model for example
  
 ## Installation
 
-Before:
+Before:  
     If you have [LongRunningBundle](https://github.com/LongRunning/LongRunning) installed you need to remove it.  
     You can't make use of `asynchronous_event_subscriber` and `event_subscriber` anymore. It's replace with `asynchronous_steroids_event_subscriber`
 
