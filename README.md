@@ -101,3 +101,26 @@ Before:
 
     
     bin/console simplebus:async-producer -vvv
+    
+    
+## Configuration
+
+        
+        
+        simple_bus_on_steroids:
+            requeue_max_times: 3
+            requeue_time: 3
+            requeue_multiply_by: 3
+            dead_letter_exchange_name: asynchronous_events
+            dead_letter_queue_name: dead_letter
+            how_many_to_retrieve_at_once: 5
+            send_messages_every_seconds: 1.2
+            
+        requeue_max_times - Max tries of requeue before message will go to the dead letter queue (default: 3)
+        requeue_time - Amount of seconds before message will be handled after fail (default: 3)
+        requeue_multiply_by - How many times multiply requeue time for each time message which fail (default: 3)
+        dead_letter_exchange_name - Name of the exchange where broken message will be published (default: asynchronous_events)\
+        dead_letter_queue_name - Name of the queue where broken messages will be published (default: dead_letter)
+        how_many_to_retrieve_at_once - How many message should be retrieved at once to be published (default: 5)
+        send_messages_every_seconds - Break between publishing in seconds (default: 1.2)
+        
