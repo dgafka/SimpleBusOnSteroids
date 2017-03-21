@@ -44,54 +44,58 @@ Before:
 1. Change rabbitmq configuration. You need to have [delayed-message plugin](https://github.com/rabbitmq/rabbitmq-delayed-message-exchange) installed in your rabbitmq instance
   
   
-    old_sound_rabbit_mq:
-        producers:
-            asynchronous_events:
-                connection:       default
-                exchange_options: { name: 'asynchronous_events', type: x-delayed-message, arguments: {x-delayed-type: ['S', "topic"]} }
-        consumers:
-            asynchronous_events_consumer:
-                connection:       default
-                exchange_options: { name: 'asynchronous_events', type: x-delayed-message, arguments: {x-delayed-type: ['S', "topic"]} }
-                queue_options:    { name: 'queue_asynchronous_events', routing_keys: ['all'] }
-                callback:         simple_bus.on_steorids.rabbit_mq_bundle_bridge.events_consumer
-                qos_options:
-                    prefetch_count: 5        
+    
+        old_sound_rabbit_mq:
+            producers:
+                asynchronous_events:
+                    connection:       default
+                    exchange_options: { name: 'asynchronous_events', type: x-delayed-message, arguments: {x-delayed-type: ['S', "topic"]} }
+            consumers:
+                asynchronous_events_consumer:
+                    connection:       default
+                    exchange_options: { name: 'asynchronous_events', type: x-delayed-message, arguments: {x-delayed-type: ['S', "topic"]} }
+                    queue_options:    { name: 'queue_asynchronous_events', routing_keys: ['all'] }
+                    callback:         simple_bus.on_steorids.rabbit_mq_bundle_bridge.events_consumer
+                    qos_options:
+                        prefetch_count: 5        
 
 2. Create database structure
 
 
-    a) using doctrine migrations. Set in config.yml
-    
-    doctrine:
-        orm:
-            entity_managers:
-                default:
-                    auto_mapping: true
-                    mappings:
-                        SimpleBusOnSteroidsBundle:
-                          type: yml
-                          dir: "Resources/Doctrine"
-                          prefix: CleanCode
-                          is_bundle: true
 
-
-    b) using direct SQLs
+        a) using doctrine migrations. Set in config.yml
+        
+        doctrine:
+            orm:
+                entity_managers:
+                    default:
+                        auto_mapping: true
+                        mappings:
+                            SimpleBusOnSteroidsBundle:
+                              type: yml
+                              dir: "Resources/Doctrine"
+                              prefix: CleanCode
+                              is_bundle: true
     
-        CREATE TABLE simple_bus_event_store (event_meta_data_event_id VARCHAR(255) NOT NULL, event_data_event_name VARCHAR(255) NOT NULL, event_data_payload LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', event_meta_data_parent_id VARCHAR(255) DEFAULT NULL, event_meta_data_correlation_id VARCHAR(255) NOT NULL, event_meta_data_occurred_on DATETIME NOT NULL, event_meta_data_description VARCHAR(255) NOT NULL, PRIMARY KEY(event_meta_data_event_id))
+    
+        b) using direct SQLs
         
-        CREATE TABLE simple_bus_subscriber_handled_event (subscriber_name VARCHAR(255) NOT NULL, event_id VARCHAR(255) NOT NULL, PRIMARY KEY(subscriber_name, event_id))
-        
-        CREATE TABLE simple_bus_last_published_event (event_id VARCHAR(255) NOT NULL, PRIMARY KEY(event_id))
+            CREATE TABLE simple_bus_event_store (event_meta_data_event_id VARCHAR(255) NOT NULL, event_data_event_name VARCHAR(255) NOT NULL, event_data_payload LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)', event_meta_data_parent_id VARCHAR(255) DEFAULT NULL, event_meta_data_correlation_id VARCHAR(255) NOT NULL, event_meta_data_occurred_on DATETIME NOT NULL, event_meta_data_description VARCHAR(255) NOT NULL, PRIMARY KEY(event_meta_data_event_id))
+            
+            CREATE TABLE simple_bus_subscriber_handled_event (subscriber_name VARCHAR(255) NOT NULL, event_id VARCHAR(255) NOT NULL, PRIMARY KEY(subscriber_name, event_id))
+            
+            CREATE TABLE simple_bus_last_published_event (event_id VARCHAR(255) NOT NULL, PRIMARY KEY(event_id))
 
 2. Change subscribers tags to
         
           
-     XML
-     <tag name="asynchronous_event_bus_middleware" subscribes_to="Events\PersonWasCreated" subscriber_name="person_was_created_subscriber"/>
-     Annotation   
-     @DI\Tag("asynchronous_steroids_event_subscriber", attributes={"subscribes_to" = "AppBundle\Entity\PersonWasCreated", "subscriber_name" = "person_was_created_sub"})
+
+         XML
+         <tag name="asynchronous_event_bus_middleware" subscribes_to="Events\PersonWasCreated" subscriber_name="person_was_created_subscriber"/>
+         Annotation   
+         @DI\Tag("asynchronous_steroids_event_subscriber", attributes={"subscribes_to" = "AppBundle\Entity\PersonWasCreated", "subscriber_name" = "person_was_created_sub"})
      
+
 3. Start async publisher
 
     
