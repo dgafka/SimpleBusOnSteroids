@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f016ef1075da9d1ab6d7e10edd52b75d",
+    "content-hash": "bf9368d926b7a209010661713e75627b",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1568,21 +1568,21 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "3.5.2",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "5677cfe02397dd6b58c861870dfaa5d9007d3954"
+                "reference": "0b7bdfb180e72c8d76e75a649ced67e392201458"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/5677cfe02397dd6b58c861870dfaa5d9007d3954",
-                "reference": "5677cfe02397dd6b58c861870dfaa5d9007d3954",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/0b7bdfb180e72c8d76e75a649ced67e392201458",
+                "reference": "0b7bdfb180e72c8d76e75a649ced67e392201458",
                 "shasum": ""
             },
             "require": {
                 "paragonie/random_compat": "^1.0|^2.0",
-                "php": ">=5.4"
+                "php": "^5.4 || ^7.0"
             },
             "replace": {
                 "rhumsaa/uuid": "self.version"
@@ -1646,7 +1646,7 @@
                 "identifier",
                 "uuid"
             ],
-            "time": "2016-11-22T19:21:44+00:00"
+            "time": "2017-03-18T15:38:09+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",
