@@ -36,4 +36,9 @@ class SimpleBusOnSteroidsExtension extends Extension
         $container->setParameter('simple_bus_dead_letter_exchange_name', $config['simple_bus_dead_letter_exchange_name']);
         $container->setParameter('simple_bus_dead_letter_queue_name', $config['simple_bus_dead_letter_queue_name']);
     }
+
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new SimpleBusConfiguration();
+    }
 }
