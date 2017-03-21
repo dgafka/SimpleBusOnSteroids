@@ -93,12 +93,6 @@
             <argument type="service" id="simple_bus.asynchronous.event_bus.event_name_resolver" />
             <argument type="service" id="simple_bus.asynchronous_steroids.event_bus.event_subscribers_collection" />
         </service>
-
-        <service id="simple_bus.asynchronous_steroids.event_bus.event_subscribers_resolver" class="CleanCode\SimpleBusOnSteroids\Worker\AsyncRabbitProducer">
-            <tag name="console.command" />
-
-            <argument type="service" id="simple_bus_event_publisher" />
-        </service>
     </services>
 
 </container>

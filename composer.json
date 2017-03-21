@@ -11,7 +11,8 @@
     "keywords": ["simple bus", "messages", "clean code", "event sourcing", "rabbit", "event bus", "asynchronous"],
     "autoload": {
         "psr-4": {
-            "CleanCode\\": ""
+            "CleanCode\\": "",
+            "CleanCode\\SimpleBusOnSteroids\\": "src/SimpleBusOnSteroids"
         }
     },
     "require": {
