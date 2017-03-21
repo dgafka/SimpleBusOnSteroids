@@ -3,4 +3,87 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <services>
+
+        <service id="simple_bus_context_holder" class="CleanCode\SimpleBusOnSteroids\ContextHolder">
+        </service>
+
+        <service id="simple_bus_class_name_event_mapper" class="CleanCode\SimpleBusOnSteroids\EventNameMapper\ClassNameEventNameMapper">
+        </service>
+
+        <service id="simple_bus_class_name_event_mapper" class="CleanCode\SimpleBusOnSteroids\ExceptionSubscriber\ErrorHandler">
+            <tag name="kernel.event_subscriber" />
+
+            <argument type="service" id="serializer" />
+            <argument type="service" id="old_sound_rabbit_mq.asynchronous_events_producer" />
+            <argument>%simple_bus.exception.requeue_max_times%</argument>
+            <argument>%simple_bus.exception.requeue_time%</argument>
+            <argument>%simple_bus.exception.requeue_multiply_by%</argument>
+            <argument>%simple_bus.exception.dead_letter_exchange_name%</argument>
+            <argument>%simple_bus.exception.dead_letter_queue_name%</argument>
+            <argument type="service" id="logger" />
+        </service>
+
+        <service id="simple_bus_context_retrieving_middleware" class="CleanCode\SimpleBusOnSteroids\Middleware\ContextRetrieving\ContextRetrievingMiddleware">
+            <tag name="asynchronous_event_bus_middleware" priority="2000"/>
+            <tag name="command_bus_middleware" priority="2000"/>
+            <tag name="asynchronous_command_bus_middleware" priority="2000"/>
+
+            <argument type="service" id="simple_bus_context_holder" />
+            <argument type="service" id="serializer" />
+            <argument type="service" id="simple_bus_class_name_event_mapper" />
+        </service>
+
+        <service id="simple_bus_event_store.doctrine_events_collector" class="CleanCode\SimpleBusOnSteroids\Middleware\EventStore\Doctrine\DoctrineEventsCollector">
+            <tag name="doctrine.event_subscriber" connection="default"/>
+
+            <argument type="service" id="simple_bus_context_holder" />
+            <argument type="service" id="serializer" />
+            <argument type="service" id="simple_bus_event_store" />
+            <argument type="service" id="simple_bus_class_name_event_mapper" />
+        </service>
+
+        <service id="simple_bus_event_store" class="CleanCode\SimpleBusOnSteroids\Middleware\EventStore\Doctrine\DoctrineEventStore">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="simple_bus_context_holder" />
+            <argument type="service" id="serializer" />
+            <argument type="service" id="simple_bus_class_name_event_mapper" />
+        </service>
+
+        <service id="simple_bus_message_subscriber_dispatcher" class="CleanCode\SimpleBusOnSteroids\Middleware\MessageSubscriberDispatcher\MessageSubscriberDispatcher">
+            <tag name="asynchronous_event_bus_middleware" priority="1999"/>
+
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="simple_bus.asynchronous_steroids.event_bus.event_subscribers_resolver" />
+            <argument type="service" id="simple_bus_subscriber_subscriber_information_holder" />
+            <argument type="service" id="simple_bus_context_holder" />
+            <argument type="service" id="simple_bus_doctrine_subscriber_handled_event_repository" />
+        </service>
+
+        <service id="simple_bus_doctrine_subscriber_handled_event_repository" class="CleanCode\SimpleBusOnSteroids\Middleware\MessageSubscriberDispatcher\Doctrine\DoctrineSubscriberHandledEventRepository">
+            <argument type="service" id="doctrine" />
+        </service>
+
+        <service id="simple_bus_transactional_middleware" class="CleanCode\SimpleBusOnSteroids\Middleware\Transactional\TransactionalMiddleware">
+            <tag name="command_bus_middleware" priority="1998"/>
+            <tag name="asynchronous_command_bus_middleware" priority="1998"/>
+
+            <argument type="service" id="doctrine" />
+        </service>
+
+        <service id="simple_bus_subscriber_subscriber_information_holder" class="CleanCode\SimpleBusOnSteroids\Subscriber\SubscriberInformationHolder">
+            <argument>%empty_array%</argument>
+        </service>
+
+        <service id="simple_bus_event_publisher" class="CleanCode\SimpleBusOnSteroids\Worker\EventPublisher">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="event_bus" />
+            <argument type="service" id="logger" />
+            <argument type="service" id="serializer" />
+            <argument>%simple_bus.exception.how_many_to_retrieve_at_once%</argument>
+            <argument>%simple_bus.exception.send_messages_every_seconds%</argument>
+        </service>
+
+    </services>
+
 </container>

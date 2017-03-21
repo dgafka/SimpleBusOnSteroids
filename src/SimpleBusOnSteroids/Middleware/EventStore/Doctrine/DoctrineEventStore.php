@@ -10,7 +10,6 @@ use CleanCode\SimpleBusOnSteroids\Middleware\EventStore\EventStore;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Serializer;
 use Ramsey\Uuid\Uuid;
 
@@ -18,7 +17,6 @@ use Ramsey\Uuid\Uuid;
  * Class DoctrineEventStore
  * @package CleanCode\SimpleBusOnSteroids\Doctrine
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- * @DI\Service(id="simple_bus_event_store")
  */
 class DoctrineEventStore implements EventStore
 {
@@ -45,13 +43,6 @@ class DoctrineEventStore implements EventStore
      * @param ContextHolder $contextHolder
      * @param Serializer $serializer
      * @param EventNameMapper $eventNameMapper
-     *
-     * @DI\InjectParams({
-     *      "managerRegistry" = @DI\Inject("doctrine"),
-     *      "contextHolder" = @DI\Inject("simple_bus_context_holder"),
-     *      "serializer" = @DI\Inject("serializer"),
-     *      "eventNameMapper" = @DI\Inject("simple_bus_class_name_event_mapper")
-     * })
      */
     public function __construct(ManagerRegistry $managerRegistry, ContextHolder $contextHolder, Serializer $serializer, EventNameMapper $eventNameMapper)
     {

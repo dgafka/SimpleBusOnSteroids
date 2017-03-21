@@ -15,7 +15,6 @@ use SimpleBus\Message\Bus\MessageBus;
  * Class EventPublisher
  * @package CleanCode\SimpleBusOnSteroids\Worker
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- * @DI\Service(id="simple_bus_event_publisher")
  */
 class EventPublisher
 {
@@ -51,17 +50,8 @@ class EventPublisher
      * @param MessageBus $messageBus
      * @param Logger $logger
      * @param Serializer $serializer
-     *
      * @param int $howManyEventsAtOnce
      * @param float $sendMessagesEverySeconds
-     * @DI\InjectParams({
-     *      "managerRegistry" = @DI\Inject("doctrine"),
-     *      "messageBus" = @DI\Inject("event_bus"),
-     *      "logger" = @DI\Inject("logger"),
-     *      "serializer" = @DI\Inject("serializer"),
-     *      "howManyEventsAtOnce" = @DI\Inject("%simple_bus.exception.how_many_to_retrieve_at_once%"),
-     *      "sendMessagesEverySeconds" = @DI\Inject("%simple_bus.exception.send_messages_every_seconds%")
-     * })
      */
     public function __construct(ManagerRegistry $managerRegistry, MessageBus $messageBus, Logger $logger, Serializer $serializer, int $howManyEventsAtOnce, float $sendMessagesEverySeconds)
     {

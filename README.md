@@ -2,8 +2,7 @@
 
 #### Description
 
-Feature toggle is responsible for `switching service injection depending on configuration`.  
-Allowing to modify system behavior without changing code.
+Extension for `asynchronous simplebus`. Provides multiple features for securing your async works.
  
 ## Installation
 

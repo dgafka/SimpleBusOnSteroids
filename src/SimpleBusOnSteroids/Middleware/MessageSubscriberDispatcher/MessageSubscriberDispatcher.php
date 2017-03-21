@@ -9,14 +9,11 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
 use SimpleBus\Message\Subscriber\Resolver\MessageSubscribersResolver;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Class MessageHandler
  * @package CleanCode\SimpleBusOnSteroids\Middleware\MessageHandler
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- * @DI\Service()
- * @DI\Tag(name="asynchronous_event_bus_middleware", attributes={"priority"="1999"})
  */
 class MessageSubscriberDispatcher implements MessageBusMiddleware
 {
@@ -50,14 +47,6 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
      * @param SubscriberInformationHolder $subscriberInformationHolder
      * @param ContextHolder $contextHolder
      * @param SubscriberHandledEventRepository $subscriberHandledEventRepository
-     *
-     * @DI\InjectParams({
-     *      "managerRegistry" = @DI\Inject("doctrine"),
-     *      "messageSubscribersResolver" = @DI\Inject("simple_bus.asynchronous_steroids.event_bus.event_subscribers_resolver"),
-     *      "subscriberInformationHolder" = @DI\Inject("simple_bus_subscriber_subscriber_information_holder"),
-     *      "contextHolder" = @DI\Inject("simple_bus_context_holder"),
-     *      "subscriberHandledEventRepository" = @DI\Inject("simple_bus_doctrine_subscriber_handled_event_repository")
-     * })
      */
     public function __construct(
         ManagerRegistry $managerRegistry, MessageSubscribersResolver $messageSubscribersResolver,

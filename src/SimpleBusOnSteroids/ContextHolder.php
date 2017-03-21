@@ -2,13 +2,10 @@
 
 namespace CleanCode\SimpleBusOnSteroids;
 
-use JMS\DiExtraBundle\Annotation as DI;
-
 /**
  * Class ContextHolder
  * @package CleanCode\SimpleBusOnSteroids
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- * @DI\Service(shared=true, id="simple_bus_context_holder")
  */
 class ContextHolder
 {

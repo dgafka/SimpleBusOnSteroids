@@ -7,13 +7,11 @@ use CleanCode\SimpleBusOnSteroids\Middleware\MessageSubscriberDispatcher\Subscri
 use CleanCode\SimpleBusOnSteroids\Subscriber\SubscriberInformation;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Driver\Connection;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Class DoctrineSubscriberHandledEventRepository
  * @package CleanCode\SimpleBusOnSteroids\Middleware\MessageSubscriberDispatcher\Doctrine
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- * @DI\Service(id="simple_bus_doctrine_subscriber_handled_event_repository")
  */
 class DoctrineSubscriberHandledEventRepository implements SubscriberHandledEventRepository
 {
@@ -25,10 +23,6 @@ class DoctrineSubscriberHandledEventRepository implements SubscriberHandledEvent
     /**
      * DoctrineEventStore constructor.
      * @param ManagerRegistry $managerRegistry
-     *
-     * @DI\InjectParams({
-     *      "managerRegistry" = @DI\Inject("doctrine")
-     * })
      */
     public function __construct(ManagerRegistry $managerRegistry)
     {

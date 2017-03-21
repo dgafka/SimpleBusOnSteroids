@@ -18,14 +18,11 @@ use Doctrine\ORM\Events;
 use JMS\Serializer\Serializer;
 use Ramsey\Uuid\Uuid;
 use SimpleBus\Message\Recorder\ContainsRecordedMessages;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Class DoctrineEventsCollector
  * @package CleanCode\SimpleBusOnSteroids\Doctrine
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- * @DI\Service()
- * @DI\Tag(name="doctrine.event_subscriber", attributes={"connection":"default"})
  */
 class DoctrineEventsCollector implements EventSubscriber, NewEventsCollector
 {
@@ -53,12 +50,6 @@ class DoctrineEventsCollector implements EventSubscriber, NewEventsCollector
      * @param EventStore $eventStore
      *
      * @param EventNameMapper $eventNameMapper
-     * @DI\InjectParams({
-     *      "contextHolder" = @DI\Inject("simple_bus_context_holder"),
-     *      "serializer" = @DI\Inject("serializer"),
-     *      "eventStore" = @DI\Inject("simple_bus_event_store"),
-     *      "eventNameMapper" = @DI\Inject("simple_bus_class_name_event_mapper")
-     * })
      */
     public function __construct(ContextHolder $contextHolder, Serializer $serializer, EventStore $eventStore, EventNameMapper $eventNameMapper)
     {

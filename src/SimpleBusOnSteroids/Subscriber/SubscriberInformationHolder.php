@@ -2,14 +2,10 @@
 
 namespace CleanCode\SimpleBusOnSteroids\Subscriber;
 
-use JMS\DiExtraBundle\Annotation as DI;
-
 /**
  * Class SubscriberInformationHolder
  * @package CleanCode\SimpleBusOnSteroids\Subscriber
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- *
- * @DI\Service(id="simple_bus_subscriber_subscriber_information_holder")
  */
 class SubscriberInformationHolder
 {
@@ -21,10 +17,6 @@ class SubscriberInformationHolder
     /**
      * SubscriberInformationHolder constructor.
      * @param array|string[] $subscribersInformation
-     *
-     * @DI\InjectParams({
-     *      "subscribersInformation" = @DI\Inject("%empty_array%")
-     * })
      */
     public function __construct(array $subscribersInformation)
     {

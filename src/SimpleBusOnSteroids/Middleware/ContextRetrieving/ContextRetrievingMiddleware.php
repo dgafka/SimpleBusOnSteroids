@@ -8,16 +8,11 @@ use CleanCode\SimpleBusOnSteroids\Event;
 use CleanCode\SimpleBusOnSteroids\EventNameMapper;
 use JMS\Serializer\Serializer;
 use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Class ContextApplyingMiddleware
  * @package CleanCode\SimpleBusOnSteroids
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- * @DI\Service()
- * @DI\Tag(name="asynchronous_event_bus_middleware", attributes={"priority"="2000"})
- * @DI\Tag(name="command_bus_middleware", attributes={"priority"="2000"})
- * @DI\Tag(name="asynchronous_command_bus_middleware", attributes={"priority"="2000"})
  */
 class ContextRetrievingMiddleware implements MessageBusMiddleware
 {
@@ -39,12 +34,6 @@ class ContextRetrievingMiddleware implements MessageBusMiddleware
      * @param ContextHolder $contextHolder
      * @param Serializer $serializer
      * @param EventNameMapper $eventNameMapper
-     *
-     * @DI\InjectParams({
-     *      "contextHolder" = @DI\Inject("simple_bus_context_holder"),
-     *      "serializer" = @DI\Inject("serializer"),
-     *      "eventNameMapper" = @DI\Inject("simple_bus_class_name_event_mapper")
-     * })
      */
     public function __construct(ContextHolder $contextHolder, Serializer $serializer, EventNameMapper $eventNameMapper)
     {

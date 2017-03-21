@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dgafka
- * Date: 18.02.17
- * Time: 21:57
- */
 
 namespace CleanCode\SimpleBusOnSteroids\ExceptionSubscriber;
 
@@ -19,13 +13,10 @@ use PhpAmqpLib\Message\AMQPMessage;
 use SimpleBus\RabbitMQBundleBridge\Event\Events;
 use SimpleBus\RabbitMQBundleBridge\Event\MessageConsumptionFailed;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * Class ErrorHandler
  * @package CleanCode\SimpleBusOnSteroids\ExceptionSubscriber
- * @DI\Service()
- * @DI\Tag(name="kernel.event_subscriber")
  */
 class ErrorHandler implements EventSubscriberInterface
 {
