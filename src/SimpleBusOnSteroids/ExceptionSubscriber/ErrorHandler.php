@@ -6,10 +6,6 @@ use CleanCode\SimpleBusOnSteroids\Event;
 use JMS\Serializer\Serializer;
 use Monolog\Logger;
 use OldSound\RabbitMqBundle\RabbitMq\Producer;
-use PhpAmqpLib\Channel\AMQPChannel;
-use PhpAmqpLib\Connection\AMQPConnection;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Message\AMQPMessage;
 use SimpleBus\RabbitMQBundleBridge\Event\Events;
 use SimpleBus\RabbitMQBundleBridge\Event\MessageConsumptionFailed;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -64,17 +60,6 @@ class ErrorHandler implements EventSubscriberInterface
      * @param string $deadLetterExchangeName
      * @param string $deadLetterQueueName
      * @param Logger $logger
-     *
-     * @DI\InjectParams({
-     *      "serializer" = @DI\Inject("serializer"),
-     *      "producer" = @DI\Inject("old_sound_rabbit_mq.asynchronous_events_producer"),
-     *      "maxRequeueTimes" = @DI\Inject("%simple_bus.exception.requeue_max_times%"),
-     *      "baseTimeInSeconds" = @DI\Inject("%simple_bus.exception.requeue_time%"),
-     *      "multiplyBy" = @DI\Inject("%simple_bus.exception.requeue_multiply_by%"),
-     *      "deadLetterExchangeName" = @DI\Inject("%simple_bus.exception.dead_letter_exchange_name%"),
-     *      "deadLetterQueueName" = @DI\Inject("%simple_bus.exception.dead_letter_queue_name%"),
-     *      "logger" = @DI\Inject("logger")
-     * })
      */
     public function __construct(
         Serializer $serializer, Producer $producer, int $maxRequeueTimes, int $baseTimeInSeconds, int $multiplyBy,

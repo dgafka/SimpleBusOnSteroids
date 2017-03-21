@@ -27,14 +27,13 @@ class SimpleBusOnSteroidsExtension extends Extension
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('simple_bus_max_requeue_times', $config['simple_bus_max_requeue_times']);
-        $container->setParameter('simple_bus_base_time_in_seconds', $config['simple_bus_base_time_in_seconds']);
-        $container->setParameter('simple_bus_requeue_multiply_time_by', $config['simple_bus_requeue_multiply_time_by']);
-        $container->setParameter('simple_bus_synchronize_for_message_amount', $config['simple_bus_synchronize_for_message_amount']);
-        $container->setParameter('simple_bus_how_many_events_at_once', $config['simple_bus_how_many_events_at_once']);
-        $container->setParameter('simple_bus_send_messages_every_seconds', $config['simple_bus_send_messages_every_seconds']);
-        $container->setParameter('simple_bus_dead_letter_exchange_name', $config['simple_bus_dead_letter_exchange_name']);
-        $container->setParameter('simple_bus_dead_letter_queue_name', $config['simple_bus_dead_letter_queue_name']);
+        $container->setParameter('simple_bus.exception.requeue_max_times', $config['simple_bus_on_steroids']['exception']['requeue_max_times']);
+        $container->setParameter('simple_bus.exception.requeue_time', $config['simple_bus_on_steroids']['exception']['requeue_time']);
+        $container->setParameter('simple_bus.exception.requeue_multiply_by', $config['simple_bus_on_steroids']['exception']['requeue_multiply_by']);
+        $container->setParameter('simple_bus.exception.dead_letter_exchange_name', $config['simple_bus_on_steroids']['exception']['dead_letter_exchange_name']);
+        $container->setParameter('simple_bus.exception.dead_letter_queue_name', $config['simple_bus_on_steroids']['exception']['dead_letter_queue_name']);
+        $container->setParameter('simple_bus_how_many_events_at_once', $config['simple_bus_on_steroids']['publisher']['how_many_to_retrieve_at_once']);
+        $container->setParameter('simple_bus_send_messages_every_seconds', $config['simple_bus_on_steroids']['publisher']['send_messages_every_seconds']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)

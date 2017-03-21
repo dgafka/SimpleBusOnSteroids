@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Monolog\Logger;
 use SimpleBus\Message\Bus\MessageBus;
-use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,8 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class AsyncRabbitmqProducer
  * @package CleanCode\SimpleBusOnSteroids\Worker
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
- * @DI\Service()
- * @DI\Tag(name="console.command")
  */
 class AsyncRabbitProducer extends Command
 {
@@ -33,10 +30,6 @@ class AsyncRabbitProducer extends Command
      * DoctrineEventStore constructor.
      *
      * @param EventPublisher $eventPublisher
-
-     * @DI\InjectParams({
-     *      "eventPublisher" = @DI\Inject("simple_bus_event_publisher")
-     * })
      */
     public function __construct(EventPublisher $eventPublisher)
     {
