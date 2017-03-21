@@ -1,6 +1,9 @@
 CleanCode\SimpleBusOnSteroids\Event:
     type: entity
     table: simple_bus_event_store
+    indexes:
+      simple_bus_meta_occurred_description:
+        columns: [ event_meta_data_occurred_on, event_meta_data_description ]
     embedded:
         eventData:
             class: EventData
