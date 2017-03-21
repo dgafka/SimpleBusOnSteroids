@@ -29,7 +29,7 @@ class SimpleBusOnSteroidsExtension extends Extension
         $configuration = new SimpleBusConfiguration();
         $config = $processor->processConfiguration($configuration, $configs);
 
-        if (!empty($config)) {
+        if (empty($config)) {
             throw new \RuntimeException("You must provide config for 'simple_bus_on_steroids'. At least empty one.");
         }
 
