@@ -2,7 +2,8 @@
 
 #### Description
 
-Extension for `asynchronous simplebus`. Provides multiple features for securing your asynchronous work.
+Extension for `asynchronous simplebus`. Provides multiple features for securing your asynchronous work.  
+[Add to your composer.json cleancode/simple-bus-on-steroids](https://packagist.org/packages/cleancode/simple-bus-on-steroids) 
 
 ### What does it provides
 
