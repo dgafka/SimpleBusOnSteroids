@@ -11,7 +11,7 @@
         <service id="simple_bus_class_name_event_mapper" class="CleanCode\SimpleBusOnSteroids\EventNameMapper\ClassNameEventNameMapper">
         </service>
 
-        <service id="simple_bus_class_name_event_mapper" class="CleanCode\SimpleBusOnSteroids\ExceptionSubscriber\ErrorHandler">
+        <service id="simple_bus_error_handler" class="CleanCode\SimpleBusOnSteroids\ExceptionSubscriber\ErrorHandler">
             <tag name="kernel.event_subscriber" />
 
             <argument type="service" id="serializer" />
