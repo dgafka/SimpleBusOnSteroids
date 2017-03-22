@@ -2,13 +2,13 @@
 
 namespace CleanCode\DependencyInjection\ContainerBuilder;
 
-use CleanCode\SimpleBusOnSteroids\EventMetaData\Subscriber\SubscriberInformation;
+use CleanCode\SimpleBusOnSteroids\Subscriber\SubscriberInformation;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Class SubscriberInformationCompilerPass
- * @package CleanCode\SimpleBusOnSteroids\EventMetaData\Subscriber
+ * @package CleanCode\DependencyInjection\ContainerBuilder
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
  */
 class SubscriberInformationCompilerPass implements CompilerPassInterface
