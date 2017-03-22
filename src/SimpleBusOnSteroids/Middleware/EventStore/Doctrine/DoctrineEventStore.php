@@ -94,7 +94,7 @@ class DoctrineEventStore implements EventStore
     {
         /** @var Connection $connection */
         $connection = $this->managerRegistry->getConnection();
-        $pstmt = $connection->prepare("INSERT INTO simple_bus_event_store 
+        $pstmt = $connection->prepare("INSERT INTO sb_event_store 
             (
               event_meta_data_event_id, event_data_event_name, event_data_payload,
               event_meta_data_parent_id, event_meta_data_correlation_id,

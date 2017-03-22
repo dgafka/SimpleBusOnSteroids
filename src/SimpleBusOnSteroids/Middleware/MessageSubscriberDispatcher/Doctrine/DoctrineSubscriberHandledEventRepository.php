@@ -36,7 +36,7 @@ class DoctrineSubscriberHandledEventRepository implements SubscriberHandledEvent
     {
         /** @var Connection $connection */
         $connection = $this->managerRegistry->getConnection();
-        $pstmt = $connection->prepare("INSERT INTO simple_bus_subscriber_handled_event VALUES (
+        $pstmt = $connection->prepare("INSERT INTO sb_subscriber_handled_event VALUES (
             :subscriberName,
             :eventId
         )");
@@ -51,7 +51,7 @@ class DoctrineSubscriberHandledEventRepository implements SubscriberHandledEvent
     {
         /** @var Connection $connection */
         $connection = $this->managerRegistry->getConnection();
-        $pstmt = $connection->prepare("SELECT * FROM simple_bus_subscriber_handled_event
+        $pstmt = $connection->prepare("SELECT * FROM sb_subscriber_handled_event
             WHERE subscriber_name = :subscriberName 
             AND event_id = :eventId
         ");

@@ -92,10 +92,10 @@ class EventPublisher
     {
         $pstmt = $this->connection()
             ->prepare("
-            SELECT * FROM simple_bus_event_store sbes
+            SELECT * FROM sb_event_store sbes
 WHERE sbes.event_meta_data_event_id NOT IN
       (
-        SELECT event_id FROM simple_bus_last_published_event
+        SELECT event_id FROM sb_last_published_event
       )
 
 LIMIT :events
@@ -119,7 +119,7 @@ LIMIT :events
     {
         $pstmt = $this->connection()
             ->prepare("
-              INSERT INTO simple_bus_last_published_event VALUES ( :eventId )
+              INSERT INTO sb_last_published_event VALUES ( :eventId )
             ");
 
         $results = $pstmt->execute([
