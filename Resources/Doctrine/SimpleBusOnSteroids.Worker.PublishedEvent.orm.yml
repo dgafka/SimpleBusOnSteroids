@@ -1,6 +1,6 @@
 CleanCode\SimpleBusOnSteroids\Worker\PublishedEvent:
     type: entity
-    table: simple_bus_last_published_event
+    table: sb_last_published_event
     fields:
         eventId:
             type: string
