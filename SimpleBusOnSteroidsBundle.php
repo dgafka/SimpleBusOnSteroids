@@ -35,5 +35,9 @@ class SimpleBusOnSteroidsBundle extends Bundle
         $container->addCompilerPass(
             new SubscriberInformationCompilerPass()
         );
+
+        if (!class_exists('Ramsey\Uuid\Uuid')) {
+            class_alias('Rhumsaa\Uuid\Uuid', 'Ramsey\Uuid\Uuid');
+        }
     }
 }
