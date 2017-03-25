@@ -40,8 +40,16 @@ This can be used to recreate Read Model for example
 ## Installation
 
 Before:  
-    If you have [LongRunningBundle](https://github.com/LongRunning/LongRunning) installed you need to remove it.  
-    You can't make use of `asynchronous_event_subscriber` and `event_subscriber` anymore. It's replace with `asynchronous_steroids_event_subscriber`
+    If you have [LongRunningBundle](https://github.com/LongRunning/LongRunning) installed you need to remove it or change configuration to:
+      
+      
+     long_running:
+         simple_bus_rabbit_mq: true
+         doctrine_orm: false
+         doctrine_dbal: false
+         monolog: true
+         swift_mailer: true   
+      
 
 1. Change rabbitmq configuration. You need to have [delayed-message plugin](https://github.com/rabbitmq/rabbitmq-delayed-message-exchange) installed in your rabbitmq instance
   
