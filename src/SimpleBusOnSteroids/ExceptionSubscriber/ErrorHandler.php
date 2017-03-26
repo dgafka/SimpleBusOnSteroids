@@ -91,13 +91,15 @@ class ErrorHandler implements EventSubscriberInterface
         }
 
         $decodedMessage[self::REQUEUE_COUNT] = array_key_exists(self::REQUEUE_COUNT, $decodedMessage) ? ($decodedMessage[self::REQUEUE_COUNT] + 1) : 1;
-        $decodedMessage['exception'] = isset($decodedMessage['exception']) ? ($decodedMessage['exception'] . "\n" . $event->exception()->getMessage()) :  $event->exception()->getMessage();
+        $decodedMessage['exception'][] = [$event->exception()->getMessage()];
 
         $serializedMessage = json_decode($decodedMessage['serialized_message'], true);
         $eventId = $serializedMessage['meta_data_']['event_id'];
         $requeueCount = $decodedMessage[self::REQUEUE_COUNT];
 
         if ($requeueCount >= $this->maxRequeueTimes) {
+            $decodedMessage['exception'][] = [$event->exception()->getTraceAsString()];
+
             $this->logger->alert("Message with id {$eventId} has reached max requeue times. Can't handle message, exception: {$event->exception()->getMessage()}");
             $this->publishToDeadLetterQueue($decodedMessage);
             return;
