@@ -5,5 +5,5 @@ CleanCode\SimpleBusOnSteroids\EventData:
             type: string
             column: event_name
         payload:
-            type: json_array
+            type: text
             column: payload
