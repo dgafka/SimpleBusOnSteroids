@@ -90,8 +90,7 @@ class ContextRetrievingMiddleware implements MessageBusMiddleware
         if ($this->eventNameMapper->isMapped($message->eventName())) {
             $className = $this->eventNameMapper->classNameFrom($message->eventName());
 
-            if ($className) {
-                $this->logger->addAlert("Mapping for {$message->eventName()} doesn't exists");
+            if (!$className) {
                 throw new \RuntimeException("Mapping for {$message->eventName()} doesn't exists");
             }
 
