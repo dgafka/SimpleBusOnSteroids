@@ -22,6 +22,10 @@ class SimpleBusOnSteroidsExtension extends Extension
     {
         $container->setParameter('empty_array', []);
 
+        if (!$container->has('simple_bus_event_mapper')) {
+            $container->setAlias('simple_bus_event_mapper', 'simple_bus_class_name_event_mapper');
+        }
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
@@ -40,10 +44,6 @@ class SimpleBusOnSteroidsExtension extends Extension
         $container->setParameter('simple_bus.exception.dead_letter_queue_name', $config['dead_letter_queue_name']);
         $container->setParameter('simple_bus_how_many_events_at_once', $config['how_many_to_retrieve_at_once']);
         $container->setParameter('simple_bus_send_messages_every_seconds', $config['send_messages_every_seconds']);
-
-        if (!$container->has('simple_bus_name_mapper')) {
-            $container->setAlias('simple_bus_name_mapper', 'simple_bus_class_name_event_mapper');
-        }
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
