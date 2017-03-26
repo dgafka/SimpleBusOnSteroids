@@ -90,24 +90,21 @@ class EventPublisher
      */
     private function retrieveNotPublishedEvents() : array
     {
-        $pstmt = $this->connection()
-            ->prepare("
-            SELECT * FROM sb_event_store sbes
-WHERE sbes.event_meta_data_event_id NOT IN
-      (
-        SELECT event_id FROM sb_last_published_event
-      )
+        /** @var EntityManager $em */
+        $em = $this->managerRegistry->getManager();
 
-LIMIT :events
-            ");
-
-        $pstmt->bindValue('events', $this->howManyEventsAtOnce ? $this->howManyEventsAtOnce : 5, \PDO::PARAM_INT);
-        $pstmt->execute();
-
-        $events = [];
-        foreach ($pstmt->fetchAll(\PDO::FETCH_ASSOC) as $eventResult) {
-            $events[] = $this->convertToEvent($eventResult);
-        }
+        $events = $em->createQueryBuilder()
+            ->select("event")
+            ->from(Event::class, 'event')
+            ->where(
+                $em->createQueryBuilder()->expr()->notIn('event.metaData.eventId',
+                    $em->createQueryBuilder()->select('pe.eventId')
+                        ->from(PublishedEvent::class, 'pe')
+                        ->getDQL()
+                ))
+            ->setMaxResults($this->howManyEventsAtOnce)
+            ->getQuery()
+            ->execute();
 
         return $events;
     }
@@ -128,22 +125,6 @@ LIMIT :events
         if (!$results) {
             $this->logger->critical("Can't save as published event with id {$event->metaData()->eventId()}");
         }
-    }
-
-    /**
-     * @param array $result
-     * @return Event
-     */
-    private function convertToEvent(array $result) : Event
-    {
-        return Event::create(
-            $result['event_data_event_name'],
-            $result['event_data_payload'],
-            $result['event_meta_data_event_id'],
-            $result['event_meta_data_occurred_on'],
-            $result['event_meta_data_correlation_id'],
-            $result['event_meta_data_parent_id']
-        );
     }
 
     /**

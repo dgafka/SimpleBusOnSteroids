@@ -7,6 +7,7 @@ use CleanCode\SimpleBusOnSteroids\Middleware\MessageSubscriberDispatcher\Subscri
 use CleanCode\SimpleBusOnSteroids\Subscriber\SubscriberInformation;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Driver\Connection;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class DoctrineSubscriberHandledEventRepository
@@ -49,25 +50,22 @@ class DoctrineSubscriberHandledEventRepository implements SubscriberHandledEvent
 
     public function findFor(SubscriberInformation $subscriberInformation, string $eventId)
     {
-        /** @var Connection $connection */
-        $connection = $this->managerRegistry->getConnection();
-        $pstmt = $connection->prepare("SELECT * FROM sb_subscriber_handled_event
-            WHERE subscriber_name = :subscriberName 
-            AND event_id = :eventId
-        ");
+        /** @var QueryBuilder $qb */
+        $qb = $this->managerRegistry->getManager()->createQueryBuilder();
 
-        $pstmt->execute([
-            "subscriberName" => $subscriberInformation->name(),
-            "eventId" => $eventId
-        ]);
-
-        $results = $pstmt->fetchAll(\PDO::FETCH_ASSOC);
+        $results = $qb
+            ->select('she')
+            ->from(SubscriberHandledEvent::class, 'she')
+            ->where('she.subscriberName = :subscriberName')
+            ->andWhere('she.eventId = :eventId')
+            ->getQuery()
+            ->execute([
+                "subscriberName" => $subscriberInformation->name(),
+                "eventId" => $eventId
+            ]);
 
         if (array_key_exists(0, $results)) {
-            return SubscriberHandledEvent::createWith(
-                $results[0]['subscriber_name'],
-                $results[0]['event_id']
-            );
+            return $results[0];
         }
 
         return null;
