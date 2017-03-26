@@ -32,6 +32,7 @@
             <argument type="service" id="simple_bus_context_holder" />
             <argument type="service" id="serializer" />
             <argument type="service" id="simple_bus_event_mapper" />
+            <argument type="service" id="logger" />
         </service>
 
         <service id="simple_bus_event_store.doctrine_events_collector" class="CleanCode\SimpleBusOnSteroids\Middleware\EventStore\Doctrine\DoctrineEventsCollector">
@@ -58,6 +59,7 @@
             <argument type="service" id="simple_bus_subscriber_subscriber_information_holder" />
             <argument type="service" id="simple_bus_context_holder" />
             <argument type="service" id="simple_bus_doctrine_subscriber_handled_event_repository" />
+            <argument type="service" id="logger" />
         </service>
 
         <service id="simple_bus_doctrine_subscriber_handled_event_repository" class="CleanCode\SimpleBusOnSteroids\Middleware\MessageSubscriberDispatcher\Doctrine\DoctrineSubscriberHandledEventRepository">

@@ -3,10 +3,10 @@
 namespace CleanCode\SimpleBusOnSteroids\Middleware\MessageSubscriberDispatcher;
 
 use CleanCode\SimpleBusOnSteroids\ContextHolder;
-use CleanCode\SimpleBusOnSteroids\Middleware\EventStore\EventStoreMiddleware;
 use CleanCode\SimpleBusOnSteroids\Subscriber\SubscriberInformationHolder;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
 use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
 use SimpleBus\Message\Subscriber\Resolver\MessageSubscribersResolver;
 
@@ -39,6 +39,10 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
      * @var SubscriberHandledEventRepository
      */
     private $subscriberHandledEventRepository;
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     /**
      * MessageSubscriberDispatcher constructor.
@@ -47,11 +51,12 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
      * @param SubscriberInformationHolder $subscriberInformationHolder
      * @param ContextHolder $contextHolder
      * @param SubscriberHandledEventRepository $subscriberHandledEventRepository
+     * @param Logger $logger
      */
     public function __construct(
         ManagerRegistry $managerRegistry, MessageSubscribersResolver $messageSubscribersResolver,
         SubscriberInformationHolder $subscriberInformationHolder, ContextHolder $contextHolder,
-        SubscriberHandledEventRepository $subscriberHandledEventRepository
+        SubscriberHandledEventRepository $subscriberHandledEventRepository, Logger $logger
     )
     {
         $this->managerRegistry = $managerRegistry;
@@ -59,6 +64,7 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
         $this->subscriberInformationHolder = $subscriberInformationHolder;
         $this->contextHolder = $contextHolder;
         $this->subscriberHandledEventRepository = $subscriberHandledEventRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -71,6 +77,7 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
         $messageSubscribers = $this->messageSubscribersResolver->resolve($message);
         $exception = null;
 
+        $this->logger->addInfo("Handling " . get_class($message));
         foreach ($messageSubscribers as $messageSubscriber) {
             if (!array_key_exists(0, $messageSubscriber) || !$this->isMessageSubscriber($messageSubscriber[0])) {
                 throw new \RuntimeException("Passed message subscriber doesn't have handle method");

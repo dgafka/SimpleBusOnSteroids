@@ -7,6 +7,7 @@ use CleanCode\SimpleBusOnSteroids\ContextHolder;
 use CleanCode\SimpleBusOnSteroids\Event;
 use CleanCode\SimpleBusOnSteroids\EventNameMapper;
 use JMS\Serializer\Serializer;
+use Monolog\Logger;
 use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
 
 /**
@@ -28,18 +29,24 @@ class ContextRetrievingMiddleware implements MessageBusMiddleware
      * @var EventNameMapper
      */
     private $eventNameMapper;
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     /**
      * ContextApplyingMiddleware constructor.
      * @param ContextHolder $contextHolder
      * @param Serializer $serializer
      * @param EventNameMapper $eventNameMapper
+     * @param Logger $logger
      */
-    public function __construct(ContextHolder $contextHolder, Serializer $serializer, EventNameMapper $eventNameMapper)
+    public function __construct(ContextHolder $contextHolder, Serializer $serializer, EventNameMapper $eventNameMapper, Logger $logger)
     {
         $this->contextHolder = $contextHolder;
         $this->serializer = $serializer;
         $this->eventNameMapper = $eventNameMapper;
+        $this->logger = $logger;
     }
 
     /**
@@ -84,6 +91,7 @@ class ContextRetrievingMiddleware implements MessageBusMiddleware
             $className = $this->eventNameMapper->classNameFrom($message->eventName());
 
             if ($className) {
+                $this->logger->addAlert("Mapping for {$message->eventName()} doesn't exists");
                 throw new \RuntimeException("Mapping for {$message->eventName()} doesn't exists");
             }
 
