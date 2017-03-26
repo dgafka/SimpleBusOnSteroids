@@ -20,6 +20,14 @@ class ClassNameEventNameMapper implements EventNameMapper
     }
 
     /**
+     * @inheritdoc
+     */
+    public function isMapped(string $eventName) : bool
+    {
+        return true;
+    }
+
+    /**
      * @inheritDoc
      */
     public function classNameFrom(string $eventName): string

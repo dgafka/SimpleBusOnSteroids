@@ -110,7 +110,32 @@ Before:
 
     
     bin/console simplebus:async-producer -vvv
+
+## Code
     
+#### From entity
+
+
+    use SimpleBus\Message\Recorder\ContainsRecordedMessages  
+    
+    class Person implements ContainsRecordedMessages
+    {  
+    }
+    
+If your class implements `ContainsRecordedMessages`, events will be 
+automatically retrieved by `recordedMessages()` method and saved to database.
+
+
+#### Directly by Event Store
+
+    /** @var \CleanCode\SimpleBusOnSteroids\Middleware\EventStore\EventStore $eventStore*/
+    $eventStore = $container->get('simple_bus_event_store')
+    
+    $eventStore->save([new SomeEvent()]);
+    
+    
+If you do not store events in your entities you need to save events by yourself using event store.  
+Event store contains of one method save, which expects array of events.
     
 ## Configuration
 
@@ -133,3 +158,66 @@ Before:
         how_many_to_retrieve_at_once - How many message should be retrieved at once to be published (default: 5)
         send_messages_every_seconds - Break between publishing in seconds (default: 1.2)
         
+## Extending 
+
+#### Saving events with own names
+
+On default events that are stored in database are saved by class names (uses `CleanCode\SimpleBusOnSteroids\EventNameMapper\ClassNameEventNameMapper`). 
+This map be a problematic when you will `want to change` namespace or class name of the event.    
+Because you will already have old class names in the database stored. 
+
+To `handle such situation`, you may want to write your own event mapper.
+
+You can do it by extending `CleanCode\SimpleBusOnSteroids\EventNameMapper` with id in DI container `simple_bus_event_mapper`
+
+Example: 
+
+
+    class EventNameMapper implements CleanCode\SimpleBusOnSteroids\EventNameMapper
+    {
+        const EVENT_NAME_MAPPER =
+            [
+                PersonWasRegistered::class => 'person_was_registered'
+            ];
+    
+        public function eventNameFrom($event) : string
+        {
+            if (array_key_exists(get_class($event), self::EVENT_NAME_MAPPER)) {
+                return self::EVENT_NAME_MAPPER[get_class($event)];
+            }
+    
+            return '';
+        }
+
+        public function isMapped(string $eventName) : bool
+        {
+            return true;
+        }
+    
+        public function classNameFrom(string $eventName) : string
+        {
+            $className = array_search($eventName, self::EVENT_NAME_MAPPER);
+    
+            if ($className === false) {
+                return '';
+            }
+    
+            return $className;
+        }
+    }
+    
+    
+#### Saving subscriber information with own names
+     
+Simple Bus On Steroids stores subscriber names with event ids to know, which 
+event was already handled.  
+On default it does it by simply saving event class name, but this may be problematic, 
+when you will want to change subscriber class name.  
+ 
+You can solve the problem by adding tag attribute `"subscriber_name" = "person_was_created_subscriber"`  
+
+
+         XML
+         <tag name="asynchronous_steroids_event_subscriber" subscribes_to="Events\PersonWasCreated" subscriber_name="person_was_created_subscriber"/>
+         Annotation   
+         @DI\Tag("asynchronous_steroids_event_subscriber", attributes={"subscribes_to" = "AppBundle\Entity\PersonWasCreated", "subscriber_name" = "person_was_created_sub"})    

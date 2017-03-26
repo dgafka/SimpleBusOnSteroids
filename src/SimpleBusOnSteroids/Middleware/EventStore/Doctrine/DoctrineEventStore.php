@@ -62,10 +62,17 @@ class DoctrineEventStore implements EventStore
         $context = $this->contextHolder->currentContext();
 
         foreach ($events as $event) {
+            $eventName = $this->eventNameMapper->eventNameFrom($event);
+
+            if (!$eventName) {
+                throw new \RuntimeException("Event name was not mapped for " . get_class($event));
+            }
+
+            $eventPayload = $this->serializer->serialize($event, "json");
             if ($event instanceof EventExtraMetadata) {
                 $eventDecoratedWithMetaData = Event::createWithDescription(
-                    $this->eventNameMapper->eventNameFrom($event),
-                    $this->serializer->serialize($event, "json"),
+                    $eventName,
+                    $eventPayload,
                     Uuid::uuid4()->toString(),
                     $currentTime,
                     $context->currentCorrelationId(),
@@ -74,8 +81,8 @@ class DoctrineEventStore implements EventStore
                 );
             }else {
                 $eventDecoratedWithMetaData = Event::create(
-                    $this->eventNameMapper->eventNameFrom($event),
-                    $this->serializer->serialize($event, "json"),
+                    $eventName,
+                    $eventPayload,
                     Uuid::uuid4()->toString(),
                     $currentTime,
                     $context->currentCorrelationId(),

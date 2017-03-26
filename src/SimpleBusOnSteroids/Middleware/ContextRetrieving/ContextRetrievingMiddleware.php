@@ -80,12 +80,20 @@ class ContextRetrievingMiddleware implements MessageBusMiddleware
      */
     private function runEvent(Event $message, callable $next)
     {
-        $next(
-            $this->serializer->deserialize(
-                $message->payload(),
-                $this->eventNameMapper->classNameFrom($message->eventName()),
-                "json"
-            )
-        );
+        if ($this->eventNameMapper->isMapped($message->eventName())) {
+            $className = $this->eventNameMapper->classNameFrom($message->eventName());
+
+            if ($className) {
+                throw new \RuntimeException("Mapping for {$message->eventName()} doesn't exists");
+            }
+
+            $next(
+                $this->serializer->deserialize(
+                    $message->payload(),
+                    $className,
+                    "json"
+                )
+            );
+        }
     }
 }

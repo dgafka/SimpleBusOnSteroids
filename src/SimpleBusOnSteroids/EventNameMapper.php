@@ -18,6 +18,14 @@ interface EventNameMapper
     public function eventNameFrom($event) : string;
 
     /**
+     * Returns, if specific event is mapped, which means should be handled within system
+     *
+     * @param string $eventName
+     * @return bool
+     */
+    public function isMapped(string $eventName) : bool;
+
+    /**
      * Opposite to eventNameFrom
      *
      * @param string $eventName
