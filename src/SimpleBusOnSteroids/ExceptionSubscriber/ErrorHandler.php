@@ -91,6 +91,10 @@ class ErrorHandler implements EventSubscriberInterface
         }
 
         $decodedMessage[self::REQUEUE_COUNT] = array_key_exists(self::REQUEUE_COUNT, $decodedMessage) ? ($decodedMessage[self::REQUEUE_COUNT] + 1) : 1;
+
+        if (array_key_exists('exception', $decodedMessage)) {
+            $decodedMessage['exception'] = json_decode($decodedMessage['exception'], true);
+        }
         $decodedMessage['exception'][] = [$event->exception()->getMessage()];
 
         $serializedMessage = json_decode($decodedMessage['serialized_message'], true);
@@ -99,6 +103,7 @@ class ErrorHandler implements EventSubscriberInterface
 
         if ($requeueCount >= $this->maxRequeueTimes) {
             $decodedMessage['exception'][] = [$event->exception()->getTraceAsString()];
+            $decodedMessage['exception'] = json_encode($decodedMessage['exception']);
 
             $this->logger->alert("Message with id {$eventId} has reached max requeue times. Can't handle message, exception: {$event->exception()->getMessage()}");
             $this->publishToDeadLetterQueue($decodedMessage);
@@ -106,6 +111,7 @@ class ErrorHandler implements EventSubscriberInterface
         }
 
         $this->logger->error("Starting to requeue message with id {$eventId}. Requeue count {$requeueCount}. Exception: {$event->exception()->getMessage()}");
+        $decodedMessage['exception'] = json_encode($decodedMessage['exception']);
         $this->requeueMessage($event, $requeueCount, $decodedMessage);
 
         //https://www.rabbitmq.com/blog/2015/04/16/scheduling-messages-with-rabbitmq/
