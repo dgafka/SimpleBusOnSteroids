@@ -6,9 +6,10 @@ use CleanCode\SimpleBusOnSteroids\Event;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\EntityManager;
-use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Serializer;
 use Monolog\Logger;
+use OldSound\RabbitMqBundle\RabbitMq\Producer;
+use PhpAmqpLib\Connection\AMQPConnection;
 use SimpleBus\Message\Bus\MessageBus;
 
 /**
@@ -42,6 +43,10 @@ class EventPublisher
      * @var float
      */
     private $sendMessagesEverySeconds;
+    /**
+     * @var Producer
+     */
+    private $producer;
 
     /**
      * DoctrineEventStore constructor.
@@ -50,10 +55,11 @@ class EventPublisher
      * @param MessageBus $messageBus
      * @param Logger $logger
      * @param Serializer $serializer
+     * @param Producer $producer
      * @param int $howManyEventsAtOnce
      * @param float $sendMessagesEverySeconds
      */
-    public function __construct(ManagerRegistry $managerRegistry, MessageBus $messageBus, Logger $logger, Serializer $serializer, int $howManyEventsAtOnce, float $sendMessagesEverySeconds)
+    public function __construct(ManagerRegistry $managerRegistry, MessageBus $messageBus, Logger $logger, Serializer $serializer, Producer $producer, int $howManyEventsAtOnce, float $sendMessagesEverySeconds)
     {
         $this->managerRegistry = $managerRegistry;
         $this->eventBus = $messageBus;
@@ -61,6 +67,7 @@ class EventPublisher
         $this->serializer = $serializer;
         $this->howManyEventsAtOnce = (int)$howManyEventsAtOnce;
         $this->sendMessagesEverySeconds = $sendMessagesEverySeconds;
+        $this->producer = $producer;
     }
 
 
@@ -77,9 +84,11 @@ class EventPublisher
                 }
             }catch (\Exception $e) {
                 $this->managerRegistry->resetManager();
+                $this->producer->reconnect();
                 $this->logger->addError($e->getMessage());
             }catch (\Throwable $e) {
                 $this->managerRegistry->resetManager();
+                $this->producer->reconnect();
                 $this->logger->addCritical($e->getMessage());
             }
         }

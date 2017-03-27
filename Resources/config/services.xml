@@ -82,6 +82,7 @@
             <argument type="service" id="event_bus" />
             <argument type="service" id="logger" />
             <argument type="service" id="serializer" />
+            <argument type="service" id="old_sound_rabbit_mq.asynchronous_events_producer" />
             <argument>%simple_bus_how_many_events_at_once%</argument>
             <argument>%simple_bus_send_messages_every_seconds%</argument>
         </service>
