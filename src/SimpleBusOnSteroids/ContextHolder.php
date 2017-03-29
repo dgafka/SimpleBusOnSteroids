@@ -25,6 +25,6 @@ class ContextHolder
      */
     public function currentContext() : Context
     {
-        return $this->currentContext;
+        return $this->currentContext ? $this->currentContext : Context::withNoParentEvent();
     }
 }
