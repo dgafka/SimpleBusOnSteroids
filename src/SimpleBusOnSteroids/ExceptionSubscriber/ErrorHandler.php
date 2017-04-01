@@ -193,15 +193,6 @@ class ErrorHandler implements EventSubscriberInterface
 
     /**
      * @param $decodedMessage
-     * @return string
-     */
-    private function encodeMessage($decodedMessage): string
-    {
-        return json_encode($decodedMessage['exception']);
-    }
-
-    /**
-     * @param $decodedMessage
      * @return array
      */
     private function retrieveSerializedMessage($decodedMessage): array
