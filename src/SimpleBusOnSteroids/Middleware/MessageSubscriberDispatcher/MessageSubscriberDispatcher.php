@@ -105,7 +105,7 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
                 $entityManager->flush();
                 $entityManager->commit();
                 $this->managerRegistry->resetManager();
-            }catch (\Exception $e) {
+            }catch (\Throwable $e) {
                 $entityManager->rollback();
                 $this->managerRegistry->resetManager();
 
