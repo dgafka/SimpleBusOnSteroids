@@ -98,7 +98,7 @@ class ErrorHandler implements EventSubscriberInterface
         }
 
         $decodedMessage[self::REQUEUE_COUNT] = array_key_exists(self::REQUEUE_COUNT, $decodedMessage) ? ($decodedMessage[self::REQUEUE_COUNT] + 1) : 1;
-        $decodedMessage['exception'][] = [$event->exception()->getMessage()];
+        $decodedMessage['exception'][] = $event->exception()->getMessage();
 
         $serializedMessage = $this->retrieveSerializedMessage($decodedMessage);
 
