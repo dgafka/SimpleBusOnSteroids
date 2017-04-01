@@ -77,7 +77,8 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
         $messageSubscribers = $this->messageSubscribersResolver->resolve($message);
         $exception = null;
 
-        $this->logger->addInfo("Handling " . get_class($message));
+        $messageClass = get_class($message);
+        $this->logger->addInfo("Handling " . $messageClass);
         foreach ($messageSubscribers as $messageSubscriber) {
             if (!array_key_exists(0, $messageSubscriber) || !$this->isMessageSubscriber($messageSubscriber[0])) {
                 throw new \RuntimeException("Passed message subscriber doesn't have handle method");
@@ -87,6 +88,10 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
             $entityManager->beginTransaction();
             try {
                 $currentEventId = $this->contextHolder->currentContext()->currentlyHandledEventId();
+                if (!$currentEventId) {
+                    throw new \RuntimeException("Event with class name {$messageClass} doesn't have id. Probably it was published without Simple Bus On Steroids and can't be read");
+                }
+
                 $subscriberInformation = $this->subscriberInformationHolder->findFor($messageSubscriber);
 
                 if (!$this->isAlreadyHandled($subscriberInformation, $currentEventId)) {
@@ -99,6 +104,7 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
 
                 $entityManager->flush();
                 $entityManager->commit();
+                $this->managerRegistry->resetManager();
             }catch (\Exception $e) {
                 $entityManager->rollback();
                 $this->managerRegistry->resetManager();
@@ -130,6 +136,10 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
      */
     private function isAlreadyHandled($subscriberInformation, $currentEventId) : bool
     {
+        if (!$currentEventId) {
+            true;
+        }
+
         return (bool)$this->subscriberHandledEventRepository->findFor($subscriberInformation, $currentEventId);
     }
 }
