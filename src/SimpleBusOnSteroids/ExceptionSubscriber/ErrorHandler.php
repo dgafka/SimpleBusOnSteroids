@@ -17,6 +17,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class ErrorHandler implements EventSubscriberInterface
 {
     const REQUEUE_COUNT = 'requeueCount';
+    const MESSAGE_TYPE = 'messageType';
+    const MESSAGE_TYPE_SECOND_KEY = 'message_type';
+    const SERIALIZED_MESSAGE = 'serializedMessage';
+    const SERIALIZED_MESSAGE_SECOND_KEY = 'serialized_message';
     /**
      * @var Serializer
      */
@@ -86,7 +90,10 @@ class ErrorHandler implements EventSubscriberInterface
         $messageBody = $event->message()->getBody();
         $decodedMessage = json_decode($messageBody, true);
 
-        if (!(array_key_exists('message_type', $decodedMessage) && $decodedMessage['message_type'] === Event::class)) {
+        if (
+            !($this->isEventClass(self::MESSAGE_TYPE, $decodedMessage))
+            || !($this->isEventClass(self::MESSAGE_TYPE_SECOND_KEY, $decodedMessage))
+        ) {
             return;
         }
 
@@ -97,13 +104,17 @@ class ErrorHandler implements EventSubscriberInterface
         }
         $decodedMessage['exception'][] = [$event->exception()->getMessage()];
 
-        $serializedMessage = json_decode($decodedMessage['serialized_message'], true);
+        $serializedMessage = json_decode($decodedMessage[self::SERIALIZED_MESSAGE], true);
+        if (!$serializedMessage) {
+            $serializedMessage = json_decode($decodedMessage[self::SERIALIZED_MESSAGE_SECOND_KEY], true);
+        }
+
         $eventId = $serializedMessage['meta_data_']['event_id'];
         $requeueCount = $decodedMessage[self::REQUEUE_COUNT];
 
         if ($requeueCount >= $this->maxRequeueTimes) {
             $decodedMessage['exception'][] = [$event->exception()->getTraceAsString()];
-            $decodedMessage['exception'] = json_encode($decodedMessage['exception']);
+            $decodedMessage['exception'] = $this->encodeMessage($decodedMessage);
 
             $this->logger->alert("Message with id {$eventId} has reached max requeue times. Can't handle message, exception: {$event->exception()->getMessage()}");
             $this->publishToDeadLetterQueue($decodedMessage);
@@ -111,7 +122,7 @@ class ErrorHandler implements EventSubscriberInterface
         }
 
         $this->logger->error("Starting to requeue message with id {$eventId}. Requeue count {$requeueCount}. Exception: {$event->exception()->getMessage()}");
-        $decodedMessage['exception'] = json_encode($decodedMessage['exception']);
+        $decodedMessage['exception'] = $this->encodeMessage($decodedMessage);
         $this->requeueMessage($event, $requeueCount, $decodedMessage);
 
         //https://www.rabbitmq.com/blog/2015/04/16/scheduling-messages-with-rabbitmq/
@@ -177,5 +188,24 @@ class ErrorHandler implements EventSubscriberInterface
             "type" => 'x-delayed-message'
         ]);
         $this->producer->publish(json_encode($decodedMessage), $this->deadLetterQueueName, [], []);
+    }
+
+    /**
+     * @param $key
+     * @param $decodedMessage
+     * @return bool
+     */
+    private function isEventClass($key, $decodedMessage): bool
+    {
+        return array_key_exists($key, $decodedMessage) && $decodedMessage[$key] === Event::class;
+    }
+
+    /**
+     * @param $decodedMessage
+     * @return string
+     */
+    private function encodeMessage($decodedMessage): string
+    {
+        return json_encode($decodedMessage['exception']);
     }
 }
