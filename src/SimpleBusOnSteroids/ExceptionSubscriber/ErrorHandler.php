@@ -92,7 +92,7 @@ class ErrorHandler implements EventSubscriberInterface
 
         if (
             !($this->isEventClass(self::MESSAGE_TYPE, $decodedMessage))
-            || !($this->isEventClass(self::MESSAGE_TYPE_SECOND_KEY, $decodedMessage))
+            && !($this->isEventClass(self::MESSAGE_TYPE_SECOND_KEY, $decodedMessage))
         ) {
             return;
         }
@@ -104,10 +104,7 @@ class ErrorHandler implements EventSubscriberInterface
         }
         $decodedMessage['exception'][] = [$event->exception()->getMessage()];
 
-        $serializedMessage = json_decode($decodedMessage[self::SERIALIZED_MESSAGE], true);
-        if (!$serializedMessage) {
-            $serializedMessage = json_decode($decodedMessage[self::SERIALIZED_MESSAGE_SECOND_KEY], true);
-        }
+        $serializedMessage = $this->retrieveSerializedMessage($decodedMessage);
 
         $eventId = $serializedMessage['meta_data_']['event_id'];
         $requeueCount = $decodedMessage[self::REQUEUE_COUNT];
@@ -207,5 +204,20 @@ class ErrorHandler implements EventSubscriberInterface
     private function encodeMessage($decodedMessage): string
     {
         return json_encode($decodedMessage['exception']);
+    }
+
+    /**
+     * @param $decodedMessage
+     * @return array
+     */
+    private function retrieveSerializedMessage($decodedMessage): array
+    {
+        $serializedMessage = json_decode($decodedMessage[self::SERIALIZED_MESSAGE], true);
+        if (!$serializedMessage) {
+            $serializedMessage = json_decode($decodedMessage[self::SERIALIZED_MESSAGE_SECOND_KEY], true);
+            return $serializedMessage;
+        }
+
+        return $serializedMessage;
     }
 }
