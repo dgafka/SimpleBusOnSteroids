@@ -72,20 +72,21 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
      */
     public function handle($message, callable $next)
     {
-        /** @var EntityManager $entityManager */
-        $entityManager = $this->managerRegistry->getManager();
         $messageSubscribers = $this->messageSubscribersResolver->resolve($message);
         $exception = null;
 
         $messageClass = get_class($message);
         $this->logger->addInfo("Handling " . $messageClass);
         foreach ($messageSubscribers as $messageSubscriber) {
+            /** @var EntityManager $entityManager */
+            $entityManager = $this->managerRegistry->getManager();
+            $entityManager->beginTransaction();
+
             if (!array_key_exists(0, $messageSubscriber) || !$this->isMessageSubscriber($messageSubscriber[0])) {
                 throw new \RuntimeException("Passed message subscriber doesn't have handle method");
             }
 
             $messageSubscriber = $messageSubscriber[0];
-            $entityManager->beginTransaction();
             try {
                 $currentEventId = $this->contextHolder->currentContext()->currentlyHandledEventId();
                 if (!$currentEventId) {
@@ -104,7 +105,7 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
 
                 $entityManager->flush();
                 $entityManager->commit();
-                $this->managerRegistry->resetManager();
+                $this->managerRegistry->getManager()->clear();
             }catch (\Exception $e) {
                 $entityManager->rollback();
                 $this->managerRegistry->resetManager();
