@@ -178,7 +178,7 @@ class ErrorHandler implements EventSubscriberInterface
             "name" => $this->deadLetterExchangeName,
             "type" => 'x-delayed-message'
         ]);
-        $this->producer->publish(json_encode($decodedMessage), $this->deadLetterQueueName, [], []);
+        $this->producer->publish(json_encode($decodedMessage), '', [], []);
     }
 
     /**
