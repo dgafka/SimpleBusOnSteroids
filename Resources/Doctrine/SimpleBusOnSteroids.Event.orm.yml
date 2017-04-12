@@ -13,3 +13,4 @@ CleanCode\SimpleBusOnSteroids\Event:
         metaData:
             class: MetaData
             columnPrefix: event_meta_data_
+            nullable: true

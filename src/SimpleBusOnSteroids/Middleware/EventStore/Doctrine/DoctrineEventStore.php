@@ -9,6 +9,7 @@ use CleanCode\SimpleBusOnSteroids\EventNameMapper;
 use CleanCode\SimpleBusOnSteroids\Middleware\EventStore\EventStore;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Statement;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Ramsey\Uuid\Uuid;
@@ -101,7 +102,32 @@ class DoctrineEventStore implements EventStore
     {
         /** @var Connection $connection */
         $connection = $this->managerRegistry->getConnection();
-        $pstmt = $connection->prepare("INSERT INTO sb_event_store 
+
+        if ($connection->getDriver()->getName() === 'oci8') {
+            $pstmt = $this->oracleInsertStatement($connection);
+        }else {
+            $pstmt = $this->defaultInsertStatement($connection);
+        }
+
+        $occurredOn = $event->metaData()->occurredOn();
+        $pstmt->execute([
+            "eventMetaDataId" => $event->metaData()->eventId(),
+            "eventName" => $event->eventName(),
+            "eventDataPayload" => $event->payload(),
+            "eventMetaDataParentId" => $event->metaData()->parentId(),
+            "eventMetaDataCorrelationId" => $event->metaData()->correlationId(),
+            "eventMetaDataOccurredOn" => (new \DateTimeImmutable($occurredOn))->format('Y-m-d H:i:s'),
+            "eventMetaDataDescription" => $event->metaData()->description()
+        ]);
+    }
+
+    /**
+     * @param $connection
+     * @return mixed
+     */
+    private function defaultInsertStatement(Connection $connection) : Statement
+    {
+        return $connection->prepare("INSERT INTO sb_event_store 
             (
               event_meta_data_event_id, event_data_event_name, event_data_payload,
               event_meta_data_parent_id, event_meta_data_correlation_id,
@@ -116,15 +142,28 @@ class DoctrineEventStore implements EventStore
             :eventMetaDataOccurredOn,
             :eventMetaDataDescription
         )");
+    }
 
-        $pstmt->execute([
-            "eventMetaDataId" => $event->metaData()->eventId(),
-            "eventName" => $event->eventName(),
-            "eventDataPayload" => $event->payload(),
-            "eventMetaDataParentId" => $event->metaData()->parentId(),
-            "eventMetaDataCorrelationId" => $event->metaData()->correlationId(),
-            "eventMetaDataOccurredOn" => $event->metaData()->occurredOn(),
-            "eventMetaDataDescription" => $event->metaData()->description()
-        ]);
+    /**
+     * @param $connection
+     * @return mixed
+     */
+    private function oracleInsertStatement(Connection $connection) : Statement
+    {
+        return $connection->prepare("INSERT INTO sb_event_store 
+            (
+              event_meta_data_event_id, event_data_event_name, event_data_payload,
+              event_meta_data_parent_id, event_meta_data_correlation_id,
+              event_meta_data_occurred_on, event_meta_data_description
+            )
+            VALUES (
+            :eventMetaDataId,
+            :eventName,
+            :eventDataPayload,
+            :eventMetaDataParentId,
+            :eventMetaDataCorrelationId,
+            to_date(:eventMetaDataOccurredOn),
+            :eventMetaDataDescription
+        )");
     }
 }
