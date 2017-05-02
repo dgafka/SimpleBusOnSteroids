@@ -6,6 +6,7 @@ use CleanCode\SimpleBusOnSteroids\ContextHolder;
 use CleanCode\SimpleBusOnSteroids\Subscriber\SubscriberInformationHolder;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Logger;
 use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
 use SimpleBus\Message\Subscriber\Resolver\MessageSubscribersResolver;
@@ -79,6 +80,7 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
         $this->logger->addInfo("Handling " . $messageClass);
         foreach ($messageSubscribers as $messageSubscriber) {
             /** @var EntityManager $entityManager */
+            $this->managerRegistry->resetManager();
             $entityManager = $this->managerRegistry->getManager();
             $entityManager->beginTransaction();
 
@@ -105,15 +107,12 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
 
                 $entityManager->flush();
                 $entityManager->commit();
-                $this->managerRegistry->getManager()->clear();
             }catch (\Exception $e) {
-                $entityManager->rollback();
-                $this->managerRegistry->resetManager();
+                $this->prepareDoctrineForNextUsage($entityManager);
 
                 $exception =  $e;
             }catch (\Throwable $e) {
-                $entityManager->rollback();
-                $this->managerRegistry->resetManager();
+                $this->prepareDoctrineForNextUsage($entityManager);
 
                 $exception = new \RuntimeException($e->getMessage(), $e->getCode(), $e);
             }
@@ -147,5 +146,15 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
         }
 
         return (bool)$this->subscriberHandledEventRepository->findFor($subscriberInformation, $currentEventId);
+    }
+
+    /**
+     * @param $entityManager
+     */
+    private function prepareDoctrineForNextUsage(EntityManagerInterface $entityManager)
+    {
+        $entityManager->rollback();
+        $entityManager->getConnection()->close();
+        $entityManager->getConnection()->connect();
     }
 }
