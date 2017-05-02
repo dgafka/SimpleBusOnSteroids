@@ -44,6 +44,8 @@ class SimpleBusOnSteroidsExtension extends Extension
         $container->setParameter('simple_bus.exception.dead_letter_queue_name', $config['dead_letter_queue_name']);
         $container->setParameter('simple_bus_how_many_events_at_once', $config['how_many_to_retrieve_at_once']);
         $container->setParameter('simple_bus_send_messages_every_seconds', $config['send_messages_every_seconds']);
+        $container->setParameter('simple_bus_requeue_exchange_name', $config['send_messages_every_seconds']);
+        $container->setParameter('simple_bus_requeue_routing_key', $config['send_messages_every_seconds']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
