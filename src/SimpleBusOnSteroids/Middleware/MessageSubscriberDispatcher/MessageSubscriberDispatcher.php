@@ -108,13 +108,13 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
                 $entityManager->flush();
                 $entityManager->commit();
             }catch (\Exception $e) {
-                $this->prepareDoctrineForNextUsage($entityManager);
-
                 $exception =  $e;
-            }catch (\Throwable $e) {
-                $this->prepareDoctrineForNextUsage($entityManager);
 
+                $this->prepareDoctrineForNextUsage();
+            }catch (\Throwable $e) {
                 $exception = new \RuntimeException($e->getMessage(), $e->getCode(), $e);
+
+                $this->prepareDoctrineForNextUsage();
             }
         }
 
@@ -148,13 +148,10 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
         return (bool)$this->subscriberHandledEventRepository->findFor($subscriberInformation, $currentEventId);
     }
 
-    /**
-     * @param $entityManager
-     */
-    private function prepareDoctrineForNextUsage(EntityManagerInterface $entityManager)
+    private function prepareDoctrineForNextUsage()
     {
-        $entityManager->rollback();
-        $entityManager->getConnection()->close();
-        $entityManager->getConnection()->connect();
+        $this->managerRegistry->getConnection()->rollback();
+        $this->managerRegistry->getConnection()->close();
+        $this->managerRegistry->getConnection()->connect();
     }
 }

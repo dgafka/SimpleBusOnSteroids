@@ -53,6 +53,14 @@ class ErrorHandler implements EventSubscriberInterface
      * @var Logger
      */
     private $logger;
+    /**
+     * @var string
+     */
+    private $requeueExchangeName;
+    /**
+     * @var string
+     */
+    private $requeueRoutingKey;
 
     /**
      * ContextApplyingMiddleware constructor.
@@ -64,10 +72,13 @@ class ErrorHandler implements EventSubscriberInterface
      * @param string $deadLetterExchangeName
      * @param string $deadLetterQueueName
      * @param Logger $logger
+     * @param string $requeueExchangeName
+     * @param string $requeueRoutingKey
      */
     public function __construct(
         Serializer $serializer, Producer $producer, int $maxRequeueTimes, int $baseTimeInSeconds, int $multiplyBy,
-        string $deadLetterExchangeName, string $deadLetterQueueName, Logger $logger
+        string $deadLetterExchangeName, string $deadLetterQueueName, Logger $logger,
+        string $requeueExchangeName, string $requeueRoutingKey
     )
     {
         $this->serializer = $serializer;
@@ -78,6 +89,8 @@ class ErrorHandler implements EventSubscriberInterface
         $this->deadLetterExchangeName = $deadLetterExchangeName;
         $this->deadLetterQueueName = $deadLetterQueueName;
         $this->logger = $logger;
+        $this->requeueExchangeName = $requeueExchangeName;
+        $this->requeueRoutingKey = $requeueRoutingKey;
     }
 
     public static function getSubscribedEvents()
@@ -159,8 +172,8 @@ class ErrorHandler implements EventSubscriberInterface
     private function requeueMessage(MessageConsumptionFailed $event, $requeueCount, $decodedMessage)
     {
         $properties = ["x-delay" => $this->calculateDelay($requeueCount)];
-        $exchange = $event->message()->delivery_info['exchange'];
-        $routingKey = $event->message()->delivery_info['routing_key'];
+        $exchange = $this->requeueExchangeName ? $this->requeueExchangeName : $event->message()->delivery_info['exchange'];
+        $routingKey = $this->requeueRoutingKey ? $this->requeueRoutingKey : $event->message()->delivery_info['routing_key'];
 
         $this->producer->setExchangeOptions([
             "name" => $exchange,

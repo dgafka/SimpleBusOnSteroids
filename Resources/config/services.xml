@@ -22,6 +22,8 @@
             <argument>%simple_bus.exception.dead_letter_exchange_name%</argument>
             <argument>%simple_bus.exception.dead_letter_queue_name%</argument>
             <argument type="service" id="logger" />
+            <argument>%requeue_exchange_name%</argument>
+            <argument>%requeue_routing_key%</argument>
         </service>
 
         <service id="simple_bus_context_retrieving_middleware" class="CleanCode\SimpleBusOnSteroids\Middleware\ContextRetrieving\ContextRetrievingMiddleware">

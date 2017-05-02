@@ -149,6 +149,8 @@ Event store contains of one method save, which expects array of events.
             dead_letter_queue_name: dead_letter
             how_many_to_retrieve_at_once: 5
             send_messages_every_seconds: 1.2
+            requeue_exchange_name: ""
+            requeue_routing_key: ""
             
         requeue_max_times - Max tries of requeue before message will go to the dead letter queue (default: 3)
         requeue_time - Amount of seconds before message will be handled after fail (default: 3)
@@ -157,6 +159,10 @@ Event store contains of one method save, which expects array of events.
         dead_letter_queue_name - Name of the queue where broken messages will be published (default: dead_letter)
         how_many_to_retrieve_at_once - How many message should be retrieved at once to be published (default: 5)
         send_messages_every_seconds - Break between publishing in seconds (default: 1.2)
+        requeue_exchange_name - Requeued message will be published to passed exchange name. If not passed it will be taken directly from message
+        requeue_routing_key - This routing key will be added to requeued message. If not passed it will be taken directly from message
+
+`requeue_exchange_name` and `requeue_routing_key` may be useful, when you don't want to requeued messages be handled once again by other applications within exchange.         
         
 ## Extending 
 
