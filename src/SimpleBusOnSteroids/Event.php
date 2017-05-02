@@ -81,6 +81,16 @@ final class Event
     }
 
     /**
+     * @param EventData $eventData
+     * @param MetaData $metaData
+     * @return Event
+     */
+    public static function createFrom(EventData $eventData, MetaData $metaData) : self
+    {
+        return new self($eventData, $metaData);
+    }
+
+    /**
      * @inheritDoc
      */
     public function metaData(): MetaData
