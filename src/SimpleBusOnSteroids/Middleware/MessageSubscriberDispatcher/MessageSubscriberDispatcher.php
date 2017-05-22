@@ -150,7 +150,6 @@ class MessageSubscriberDispatcher implements MessageBusMiddleware
 
     private function prepareDoctrineForNextUsage()
     {
-        $this->managerRegistry->getConnection()->rollback();
         $this->managerRegistry->getConnection()->close();
         $this->managerRegistry->getConnection()->connect();
     }
