@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @package CleanCode\SimpleBusOnSteroids
  * @author Dariusz Gafka <dgafka.mail@gmail.com>
  */
-final class Event
+class Event
 {
     /**
      * @var EventData
